@@ -41,11 +41,13 @@
 #include <stdbool.h>
 #include <string.h>
 #include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
 #include "inc/hw_uart.h"
 #include "inc/hw_types.h"
 #include "driverlib/fpu.h"
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
+#include "driverlib/interrupt.h"
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
@@ -146,6 +148,11 @@ main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_UART5);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
+    //
+    // Enable processor interrupts.
+    //
+    IntMasterEnable();
 
     //
     // Set GPIO A0 and A1 as UART pins.
