@@ -84,13 +84,6 @@
 
 //*****************************************************************************
 //
-// Macros used in this application.
-//
-//*****************************************************************************
-#define NUM_UART_DATA    4
-
-//*****************************************************************************
-//
 // The error routine that is called if the driver library encounters an error.
 //
 //*****************************************************************************
@@ -206,20 +199,7 @@ main(void)
                              UART_CONFIG_PAR_NONE));
     GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
-    //
-    // Print banner after clearing the terminal.
-    //
     UARTSend(UART0_BASE, (uint8_t *)"\033[2J\033[1;1H", 10);
-
-    UARTSend(UART5_BASE, (uint8_t *)"AT+GMR\r\n", strlen("AT+GMR\r\n"));
-
-    //
-    // Wait for the UART module to complete transmitting.
-    //
-    while(UARTBusy(UART5_BASE))
-    {
-    }
-
 
     //
     // Loop forever echoing data through the UART.
