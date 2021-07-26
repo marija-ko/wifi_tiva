@@ -189,6 +189,8 @@ main(void)
     GPIOPinConfigure(GPIO_PE5_U5TX);
     GPIOPinTypeUART(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 
+    GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_1);
+
     IntEnable(INT_UART5);
     UARTIntEnable(UART5_BASE, UART_INT_RX | UART_INT_RT);
 
@@ -202,6 +204,7 @@ main(void)
     UARTConfigSetExpClk(UART5_BASE, SysCtlClockGet(), 115200,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
+    GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
     //
     // Print banner after clearing the terminal.
