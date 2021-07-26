@@ -159,11 +159,7 @@ UARTSend(uint32_t ui32UARTBase, const uint8_t *pui8Buffer, uint32_t ui32Count)
 int
 main(void)
 {
-    uint8_t ui8DataTx[NUM_UART_DATA];
-    uint8_t ui8DataRx[NUM_UART_DATA];
-    uint32_t ui32index;
-
-    MAP_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -200,10 +196,10 @@ main(void)
     // Configure the UART for 115,200, 8-N-1 operation.
     //
 
-    MAP_UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
+    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
-    MAP_UARTConfigSetExpClk(UART5_BASE, SysCtlClockGet(), 115200,
+    UARTConfigSetExpClk(UART5_BASE, SysCtlClockGet(), 115200,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
 
@@ -211,32 +207,8 @@ main(void)
     // Print banner after clearing the terminal.
     //
     UARTSend(UART0_BASE, (uint8_t *)"\033[2J\033[1;1H", 10);
-    UARTSend(UART0_BASE, (uint8_t *)"\nUART Loopback Example ->",
-             strlen("\nUART Loopback Example ->"));
 
-    //
-    // Prepare data to send over the UART configured for internal loopback.
-    //
-    ui8DataTx[0] = 'u';
-    ui8DataTx[1] = 'a';
-    ui8DataTx[2] = 'r';
-    ui8DataTx[3] = 't';
-
-    //
-    // Inform user that data is being sent over for internal loopback.
-    //
-    UARTSend(UART0_BASE, (uint8_t *)"\n\n\rSending : ",
-             strlen("\n\n\rSending : "));
-    UARTSend(UART0_BASE, (uint8_t*)ui8DataTx, NUM_UART_DATA);
-
-    //
-    // Send the data, which was prepared above, over the UART configured for
-    // internal loopback operation.
-    //
-    for(ui32index = 0 ; ui32index < NUM_UART_DATA ; ui32index++)
-    {
-        UARTCharPut(UART5_BASE, ui8DataTx[ui32index]);
-    }
+    UARTSend(UART5_BASE, (uint8_t *)"AT+GMR\r\n", strlen("AT+GMR\r\n"));
 
     //
     // Wait for the UART module to complete transmitting.
@@ -245,30 +217,11 @@ main(void)
     {
     }
 
-    //
-    // Inform user that data the loopback data is being received.
-    //
-    UARTSend(UART0_BASE, (uint8_t *)"\n\rReceiving : ",
-             strlen("\n\rReceiving : "));
 
     //
-    // Read data from the UART's receive FIFO and store it.
+    // Loop forever echoing data through the UART.
     //
-    for(ui32index = 0 ; ui32index < NUM_UART_DATA ; ui32index++)
+    while(1)
     {
-        //
-        // Get the data received by the UART at its receive FIFO
-        //
-        ui8DataRx[ui32index] = UARTCharGet(UART5_BASE);
     }
-
-    //
-    // Display the data received, after loopback, over UART's receive FIFO.
-    //
-    UARTSend(UART0_BASE, (uint8_t*)ui8DataRx, NUM_UART_DATA);
-
-    //
-    // Return no errors
-    //
-    return(0);
 }
