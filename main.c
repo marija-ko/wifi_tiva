@@ -103,6 +103,34 @@ __error__(char *pcFilename, uint32_t ui32Line)
 
 //*****************************************************************************
 //
+// The UART5 interrupt handler.
+//
+//*****************************************************************************
+void
+UART5IntHandler(void)
+{
+    uint32_t ui32Status;
+
+    //
+    // Get the interrupt status.
+    //
+    ui32Status = UARTIntStatus(UART5_BASE, true);
+
+    //
+    // Clear the asserted interrupts.
+    //
+    UARTIntClear(UART5_BASE, ui32Status);
+
+    UARTCharPutNonBlocking(UART0_BASE, UARTCharGetNonBlocking(UART5_BASE));
+    while(UARTCharsAvail(UART5_BASE))
+    {
+        char k = UARTCharGetNonBlocking(UART5_BASE);
+        UARTCharPutNonBlocking(UART0_BASE, k);
+    }
+  }
+
+//*****************************************************************************
+//
 // Send a string to the UART.  This function sends a string of characters to a
 // particular UART module.
 //
@@ -165,10 +193,8 @@ main(void)
     GPIOPinConfigure(GPIO_PE5_U5TX);
     GPIOPinTypeUART(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 
-    //
-    // Internal loopback programming.  Configure the UART in loopback mode.
-    //
-    //UARTLoopbackEnable(UART7_BASE);
+    IntEnable(INT_UART5);
+    UARTIntEnable(UART5_BASE, UART_INT_RX | UART_INT_RT);
 
     //
     // Configure the UART for 115,200, 8-N-1 operation.
