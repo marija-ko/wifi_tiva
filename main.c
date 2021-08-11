@@ -357,6 +357,17 @@ main(void)
             password[++i] = '\0';
 
             UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
+
+            char text[128];
+            snprintf(text, 128, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid_list[choice2], password);
+
+            UARTSend(UART5_BASE, (uint8_t *)text, strlen(text));
+
+            while(command_finished == 0) {
+            }
+            command_finished = 0;
+
+            break;
         }
     }
 }
