@@ -283,8 +283,8 @@ main(void)
     //
     while(1)
     {
-        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n ",
-                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n "));
+        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n ",
+                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n "));
 
         uint8_t choice = UARTCharGet(UART0_BASE);
 
@@ -419,7 +419,40 @@ main(void)
 
             command_finished = 0;
             break;
+        case '4':
+            UARTSend(UART0_BASE, (uint8_t *)"Write your message \n\r", strlen("Write your message \n\r"));
+            char message [128] = "";
+            i = 0;
+            message[i] = UARTCharGet(UART0_BASE);
+            UARTCharPut(UART0_BASE, message[i]);
 
+            while(1) {
+                 char k = UARTCharGet(UART0_BASE);
+                 UARTCharPut(UART0_BASE, k);
+                 if(k == '\n' || k == '\r') break;
+                 message[++i] = k;
+            }
+            message[++i] = '\0';
+
+            char text1[128];
+            snprintf(text1, 128, "AT+CIPSEND=%d\r\n", strlen(message));
+
+            UARTSend(UART5_BASE, (uint8_t *)text1, strlen(text1));
+
+            SysCtlDelay(1000 * (SysCtlClockGet() / 3 / 1000));
+
+            while(command_finished == 0) {
+            }
+
+            command_finished = 0;
+
+            UARTSend(UART5_BASE, (uint8_t *)message, strlen(message));
+
+            while(command_finished == 0) {
+            }
+
+            command_finished = 0;
+            break;
         }
     }
 }
