@@ -3,7 +3,9 @@ import signal
 import sys 
 
 serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serv.bind(('', 3336))
+serv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+port = input('Choose a port you would like to use. ')
+serv.bind(('', int(port)))
 serv.listen(5)
 while True:
 	conn, addr = serv.accept()
