@@ -283,8 +283,8 @@ main(void)
     //
     while(1)
     {
-        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n ",
-                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n "));
+        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n ",
+                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n "));
 
         uint8_t choice = UARTCharGet(UART0_BASE);
 
@@ -376,6 +376,50 @@ main(void)
             command_finished = 0;
 
             break;
+        case '3':
+            UARTSend(UART0_BASE, (uint8_t *)"First run server.py file. \n\r Type the number of port you'd like to use. \n\r", strlen("First run server.py file. \n\r Type the number of port you'd like to use. \n\r"));
+
+            char port_number_char[5] = "";
+            i = 0;
+            port_number_char[i] = UARTCharGet(UART0_BASE);
+            UARTCharPut(UART0_BASE, port_number_char[i]);
+
+            while(1) {
+                 char k = UARTCharGet(UART0_BASE);
+                 UARTCharPut(UART0_BASE, k);
+                 if(k == '\n' || k == '\r') break;
+                 port_number_char[++i] = k;
+            }
+
+            UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
+
+            int port_number = atoi(port_number_char);
+
+            UARTSend(UART0_BASE, (uint8_t *)"Enter IP address you'd like to message. \n\r", strlen("Enter IP address you'd like to message. \n\r"));
+
+            char ip_address[16] = "";
+            i = 0;
+            ip_address[i] = UARTCharGet(UART0_BASE);
+            UARTCharPut(UART0_BASE, ip_address[i]);
+
+            while(1) {
+                 char k = UARTCharGet(UART0_BASE);
+                 UARTCharPut(UART0_BASE, k);
+                 if(k == '\n' || k == '\r') break;
+                 ip_address[++i] = k;
+            }
+            ip_address[++i] = '\0';
+            UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
+
+            snprintf(text, 128, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", ip_address, port_number);
+            UARTSend(UART5_BASE, (uint8_t *)text, strlen(text));
+
+            while(command_finished == 0) {
+            }
+
+            command_finished = 0;
+            break;
+
         }
     }
 }
