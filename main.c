@@ -189,15 +189,15 @@ UART5IntHandler(void)
         }
 
         if(k =='\x0d') {
-                   if (strstr(command, "OK") || strstr(command, "ERROR")) {
-                       command_finished = 1;
-                   }
-                   without_echo = 0;
-                   command_size = 0;
-                   memset(command, 0, strlen(command));
-               }
+            if (strstr(command, "OK") || strstr(command, "ERROR")) {
+               command_finished = 1;
+            }
+            without_echo = 0;
+            command_size = 0;
+            memset(command, 0, strlen(command));
+        }
     }
-  }
+}
 
 //*****************************************************************************
 //
