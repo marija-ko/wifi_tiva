@@ -275,8 +275,8 @@ main(void)
     //
     while(1)
     {
-        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n ",
-                        strlen("Command List:\r\n 1. Set mode \r\n "));
+        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n ",
+                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n "));
 
         uint8_t choice = UARTCharGet(UART0_BASE);
 
@@ -293,6 +293,33 @@ main(void)
 
             command_finished = 0;
             break;
+        case '2':
+            UARTSend(UART5_BASE, (uint8_t *)"AT+CWLAP\r\n", strlen("AT+CWLAP\r\n"));
+
+            while(command_finished == 0) {
+            }
+
+            command_finished = 0;
+            char listed_number[4];
+            char delimiter_comma[2] = ",";
+            char delimiter_quote[2] = "\"";
+            int i;
+
+            for(i = 0; i < number-1; i++) {
+                snprintf(listed_number, 4, "%d. ", i+1);
+                char* token;
+                char* ssid;
+
+                token = strtok(ssid_entry[i], delimiter_comma);
+                token = strtok(NULL, delimiter_comma);
+                ssid = strtok(token, delimiter_quote);
+
+                UARTSend(UART0_BASE, (uint8_t *)listed_number, strlen(listed_number));
+                UARTSend(UART0_BASE, (uint8_t *)ssid, strlen(ssid));
+                UARTSend(UART0_BASE, (uint8_t *)"\n\r", strlen("\n\r"));
+                put(ssid, i);
+            }
+
         }
     }
 }
