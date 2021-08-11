@@ -99,6 +99,9 @@ __error__(char *pcFilename, uint32_t ui32Line)
 // The UART5 interrupt handler.
 //
 //*****************************************************************************
+char command [256] = "";
+int command_size = 0;
+int command_finished = 0;
 void
 UART5IntHandler(void)
 {
@@ -118,7 +121,17 @@ UART5IntHandler(void)
     while(UARTCharsAvail(UART5_BASE))
     {
         char k = UARTCharGetNonBlocking(UART5_BASE);
+
+        command[command_size++] = k;
         UARTCharPutNonBlocking(UART0_BASE, k);
+
+        if(k =='\x0d') {
+                   if (strstr(command, "OK") || strstr(command, "ERROR")) {
+                       command_finished = 1;
+                   }
+                   command_size = 0;
+                   memset(command, 0, strlen(command));
+               }
     }
   }
 
