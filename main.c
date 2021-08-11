@@ -123,6 +123,7 @@ char* get(int index)
 //
 //*****************************************************************************
 char command [256] = "";
+int without_echo = 0;
 
 char ssid_entry[32][128];
 int listing_networks = 0;
@@ -153,13 +154,14 @@ UART5IntHandler(void)
         command[command_size++] = k;
         UARTCharPutNonBlocking(UART0_BASE, k);
 
-        if(listing_networks == 0) {
+        if(listing_networks == 0 && without_echo == 0) {
             command[command_size++] = k;
             UARTCharPutNonBlocking(UART0_BASE, k);
         }
 
         if (strstr(command,"AT+CWLAP\x0d") && listing_networks == 0) {
             listing_networks = 1;
+            without_echo = 1;
             number = 0;
             UARTCharPutNonBlocking(UART0_BASE, '\r');
             UARTCharPutNonBlocking(UART0_BASE, '\n');
@@ -167,6 +169,7 @@ UART5IntHandler(void)
             if(k =='\x0d') {
                 if (strstr(ssid_entry[number],"OK")) {
                     listing_networks = 0;
+                    without_echo = 0;
                     command_size = 0;
                     memset(command, 0, strlen(command));
                     command_finished = 1;
@@ -181,10 +184,15 @@ UART5IntHandler(void)
             }
         }
 
+        if (strstr(command,"AT+CWJAP=")){
+            without_echo = 1;
+        }
+
         if(k =='\x0d') {
                    if (strstr(command, "OK") || strstr(command, "ERROR")) {
                        command_finished = 1;
                    }
+                   without_echo = 0;
                    command_size = 0;
                    memset(command, 0, strlen(command));
                }
