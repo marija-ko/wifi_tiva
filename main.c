@@ -206,5 +206,17 @@ main(void)
     //
     while(1)
     {
+        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n ",
+                        strlen("Command List:\r\n 1. Set mode \r\n "));
+
+        uint8_t choice = UARTCharGet(UART0_BASE);
+
+        UARTCharPut(UART0_BASE, choice);
+        UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
+
+        switch(choice)
+        {
+
+        }
     }
 }
