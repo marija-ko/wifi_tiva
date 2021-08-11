@@ -434,8 +434,10 @@ main(void)
                 }
                 message[++i] = '\0';
 
-            char text1[128];
-            snprintf(text1, 128, "AT+CIPSEND=%d\r\n", strlen(message));
+                if (strcmp(message, "+++") == 0) {
+                    passthrough_mode = 0;
+                    break;
+                }
 
                 char text1[128];
                 snprintf(text1, 128, "AT+CIPSEND=%d\r\n", strlen(message));
