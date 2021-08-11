@@ -283,8 +283,8 @@ main(void)
     //
     while(1)
     {
-        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n ",
-                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n "));
+        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n 5. Restore Factory Default Settings\r\n",
+                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n 5. Restore Factory Default Settings\r\n"));
 
         uint8_t choice = UARTCharGet(UART0_BASE);
 
@@ -452,6 +452,11 @@ main(void)
             }
 
             command_finished = 0;
+            break;
+        case '5':
+            UARTSend(UART5_BASE, (uint8_t *)"AT+RESTORE\r\n", strlen("AT+RESTORE\r\n"));
+            break;
+        default:
             break;
         }
     }
