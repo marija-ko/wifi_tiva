@@ -124,6 +124,7 @@ char* get(int index)
 //*****************************************************************************
 char command [256] = "";
 int without_echo = 0;
+int passthrough_mode = 0;
 
 char ssid_entry[32][128];
 int listing_networks = 0;
@@ -185,7 +186,7 @@ UART5IntHandler(void)
         }
 
         if(k =='\x0d') {
-            if (strstr(command, "OK") || strstr(command, "ERROR")) {
+            if (strstr(command, "OK") || strstr(command, "ERROR") && passthrough_mode == 0) {
                command_finished = 1;
             }
             without_echo = 0;
@@ -279,8 +280,8 @@ main(void)
     //
     while(1)
     {
-        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n 5. Restore Factory Default Settings\r\n",
-                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Send a message \r\n 5. Restore Factory Default Settings\r\n"));
+        UARTSend(UART0_BASE, (uint8_t *)"Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Enter passthrough mode \r\n 5. Restore Factory Default Settings\r\n",
+                        strlen("Command List:\r\n 1. Set mode \r\n 2. Connect to WiFi \r\n 3. Choose port for communication \r\n 4. Enter passthrough mode \r\n 5. Restore Factory Default Settings\r\n"));
 
         uint8_t choice = UARTCharGet(UART0_BASE);
 
@@ -416,38 +417,41 @@ main(void)
             command_finished = 0;
             break;
         case '4':
-            UARTSend(UART0_BASE, (uint8_t *)"Write your message \n\r", strlen("Write your message \n\r"));
-            char message [128] = "";
-            i = 0;
-            message[i] = UARTCharGet(UART0_BASE);
-            UARTCharPut(UART0_BASE, message[i]);
+            passthrough_mode = 1;
+            UARTSend(UART0_BASE, (uint8_t *)"Write your messages. +++ to exit \n\r", strlen("Write your messages. +++ to exit \n\r"));
 
-            while(1) {
-                 char k = UARTCharGet(UART0_BASE);
-                 UARTCharPut(UART0_BASE, k);
-                 if(k == '\n' || k == '\r') break;
-                 message[++i] = k;
-            }
-            message[++i] = '\0';
+            while(passthrough_mode == 1) {
+                char message [128] = "";
+                i = 0;
+                message[i] = UARTCharGet(UART0_BASE);
+                UARTCharPut(UART0_BASE, message[i]);
+
+                while(1) {
+                     char k = UARTCharGet(UART0_BASE);
+                     UARTCharPut(UART0_BASE, k);
+                     if(k == '\n' || k == '\r') break;
+                     message[++i] = k;
+                }
+                message[++i] = '\0';
 
             char text1[128];
             snprintf(text1, 128, "AT+CIPSEND=%d\r\n", strlen(message));
 
-            UARTSend(UART5_BASE, (uint8_t *)text1, strlen(text1));
+                char text1[128];
+                snprintf(text1, 128, "AT+CIPSEND=%d\r\n", strlen(message));
 
-            SysCtlDelay(1000 * (SysCtlClockGet() / 3 / 1000));
+                UARTSend(UART5_BASE, (uint8_t *)text1, strlen(text1));
 
-            while(command_finished == 0) {
+                SysCtlDelay(1000 * (SysCtlClockGet() / 3 / 1000));
+
+                while(command_finished == 0) {
+                }
+
+                command_finished = 0;
+
+                UARTSend(UART5_BASE, (uint8_t *)message, strlen(message));
             }
 
-            command_finished = 0;
-
-            UARTSend(UART5_BASE, (uint8_t *)message, strlen(message));
-
-            while(command_finished == 0) {
-            }
-
-            command_finished = 0;
             break;
         case '5':
             UARTSend(UART5_BASE, (uint8_t *)"AT+RESTORE\r\n", strlen("AT+RESTORE\r\n"));
