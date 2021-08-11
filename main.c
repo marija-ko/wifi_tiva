@@ -229,7 +229,14 @@ main(void)
 
         switch(choice)
         {
+        case '1':
+            UARTSend(UART5_BASE, (uint8_t *)"AT+CWMODE=3\r\n", strlen("AT+CWMODE=3\r\n"));
 
+            while(command_finished == 0) {
+            }
+
+            command_finished = 0;
+            break;
         }
     }
 }
