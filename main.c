@@ -340,6 +340,23 @@ main(void)
 
             UARTSend(UART0_BASE, (uint8_t *) ssid_list[choice2], strlen(ssid_list[choice2]));
             UARTSend(UART0_BASE, (uint8_t *)"\n\r", strlen("\n\r"));
+
+            UARTSend(UART0_BASE, (uint8_t *)"Password: \n\r", strlen("Password: \n\r"));
+
+            char password[64];
+            i = 0;
+            password[i] = UARTCharGet(UART0_BASE);
+            UARTCharPut(UART0_BASE, '*');
+
+            while(1) {
+                 char k = UARTCharGet(UART0_BASE);
+                 UARTCharPut(UART0_BASE, '*');
+                 if(k == '\n' || k == '\r') break;
+                 password[++i] = k;
+            }
+            password[++i] = '\0';
+
+            UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
         }
     }
 }
