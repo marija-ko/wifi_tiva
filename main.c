@@ -320,6 +320,26 @@ main(void)
                 put(ssid, i);
             }
 
+            UARTSend(UART0_BASE, (uint8_t *)"Choose network: \n\r Type 0 to exit \n\r", strlen("Choose network: \n\r Type 0 to exit \n\r"));
+
+            char choice2_char[4] = "";
+            i = 0;
+
+            while(1) {
+                 char k = UARTCharGet(UART0_BASE);
+                 UARTCharPut(UART0_BASE, k);
+                 if(k == '\n' || k == '\r') break;
+                 choice2_char[i++] = k;
+            }
+
+            UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
+
+            int choice2 = atoi(choice2_char) - 1;
+            if (choice2 < 0 || choice2 >= number)
+                continue;
+
+            UARTSend(UART0_BASE, (uint8_t *) ssid_list[choice2], strlen(ssid_list[choice2]));
+            UARTSend(UART0_BASE, (uint8_t *)"\n\r", strlen("\n\r"));
         }
     }
 }
