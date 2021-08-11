@@ -146,13 +146,9 @@ UART5IntHandler(void)
     //
     UARTIntClear(UART5_BASE, ui32Status);
 
-    UARTCharPutNonBlocking(UART0_BASE, UARTCharGetNonBlocking(UART5_BASE));
     while(UARTCharsAvail(UART5_BASE))
     {
         char k = UARTCharGetNonBlocking(UART5_BASE);
-
-        command[command_size++] = k;
-        UARTCharPutNonBlocking(UART0_BASE, k);
 
         if(listing_networks == 0 && without_echo == 0) {
             command[command_size++] = k;
