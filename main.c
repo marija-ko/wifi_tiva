@@ -100,7 +100,12 @@ __error__(char *pcFilename, uint32_t ui32Line)
 //
 //*****************************************************************************
 char command [256] = "";
+
+char ssid_entry[32][128];
+int listing_networks = 0;
+int number = 0;
 int command_size = 0;
+int ssid_size = 0;
 int command_finished = 0;
 void
 UART5IntHandler(void)
@@ -124,6 +129,34 @@ UART5IntHandler(void)
 
         command[command_size++] = k;
         UARTCharPutNonBlocking(UART0_BASE, k);
+
+        if(listing_networks == 0) {
+            command[command_size++] = k;
+            UARTCharPutNonBlocking(UART0_BASE, k);
+        }
+
+        if (strstr(command,"AT+CWLAP\x0d") && listing_networks == 0) {
+            listing_networks = 1;
+            number = 0;
+            UARTCharPutNonBlocking(UART0_BASE, '\r');
+            UARTCharPutNonBlocking(UART0_BASE, '\n');
+        } else if (listing_networks == 1) {
+            if(k =='\x0d') {
+                if (strstr(ssid_entry[number],"OK")) {
+                    listing_networks = 0;
+                    command_size = 0;
+                    memset(command, 0, strlen(command));
+                    command_finished = 1;
+                } else {
+                    ssid_size = 0;
+                    number++;
+                }
+            } else if(k =='\x0a') {
+                continue;
+            } else {
+                ssid_entry[number][ssid_size++] = k;
+            }
+        }
 
         if(k =='\x0d') {
                    if (strstr(command, "OK") || strstr(command, "ERROR")) {
