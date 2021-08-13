@@ -58,7 +58,7 @@
 Task_Struct task0Struct, task1Struct, task2Struct;
 Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[TASKSTACKSIZE];
 
-UART_Handle uart;
+UART_Handle uart0;
 
 #define MAX_BUFFER 256
 char input[MAX_BUFFER];
@@ -75,7 +75,7 @@ Void readFxn(UArg arg0, UArg arg1)
     while (1) {
         sem_wait(&empty);
 
-        UART_read(uart, &input[last_put], 1);
+        UART_read(uart0, &input[last_put], 1);
 
         last_put = (last_put + 1) % MAX_BUFFER;
 
@@ -91,7 +91,7 @@ Void writeFxn(UArg arg0, UArg arg1)
     while (1) {
         sem_wait(&full);
 
-        UART_write(uart, &input[last_taken], 1);
+        UART_write(uart0, &input[last_taken], 1);
 
         last_taken = (last_taken + 1) % MAX_BUFFER;
 
@@ -140,9 +140,9 @@ int main(void)
     uartParams.readReturnMode = UART_RETURN_FULL;
     uartParams.readEcho = UART_ECHO_OFF;
     uartParams.baudRate = 9600;
-    uart = UART_open(Board_UART0, &uartParams);
+    uart0 = UART_open(Board_UART0, &uartParams);
 
-    if (uart == NULL) {
+    if (uart0 == NULL) {
         System_abort("Error opening the UART");
     }
 
