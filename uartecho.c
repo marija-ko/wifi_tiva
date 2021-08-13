@@ -129,6 +129,8 @@ int main(void)
 
     /* Turn on user LED */
     GPIO_write(Board_LED0, Board_LED_ON);
+    /* Chip select */
+    GPIO_write(Board_E1, Board_LED_ON);
 
     /* UART intialization */
     UART_Params uart0Params;
