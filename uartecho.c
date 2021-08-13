@@ -86,6 +86,16 @@ void console_print(char* text)
  */
 Void readUART0Fxn(UArg arg0, UArg arg1)
 {
+    char* delete = "\033[2J\033[1;1H";
+    char* command_list = "Command List:\r\n "
+            "1. Set mode \r\n "
+            "2. Connect to WiFi \r\n "
+            "3. Choose port for communication \r\n "
+            "4. Enter passthrough mode \r\n "
+            "5. Restore Factory Default Settings\r\n";
+    console_print(delete);
+    console_print(command_list);
+
     while (1) {
         sem_wait(&empty0);
 
