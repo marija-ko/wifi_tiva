@@ -63,23 +63,23 @@ UART_Handle uart0, uart5;
 #define MAX_BUFFER 256
 char input[MAX_BUFFER];
 
-sem_t mutex, empty, full;
+sem_t mutex, empty0, empty5, full0, full5, uart0_queue, uart5_queue;
 
-int last_put = 0, last_taken = 0;
+int last_put0 = 0, last_taken0 = 0, last_put5 = 0, last_taken5 = 0;
 
 /*
  *  Read function
  */
-Void readFxn(UArg arg0, UArg arg1)
+Void readUART0Fxn(UArg arg0, UArg arg1)
 {
     while (1) {
-        sem_wait(&empty);
+        sem_wait(&empty0);
 
-        UART_read(uart0, &input[last_put], 1);
+        UART_read(uart0, &input[last_put0], 1);
 
-        last_put = (last_put + 1) % MAX_BUFFER;
+        last_put0 = (last_put0 + 1) % MAX_BUFFER;
 
-        sem_post(&full);
+        sem_post(&full0);
     }
 }
 
@@ -112,14 +112,16 @@ int main(void)
     /* Construct BIOS objects */
     Task_Params taskParamsRead, taskParamsWrite;
 
-    sem_init(&empty,0,MAX_BUFFER);
-    sem_init(&full,0,0);
+    sem_init(&empty0,0,MAX_BUFFER);
+    sem_init(&full0,0,0);
+    sem_init(&empty5,0,MAX_BUFFER);
+    sem_init(&full5,0,0);
 
     Task_Params_init(&taskParamsRead);
     taskParamsRead.stackSize = TASKSTACKSIZE;
     taskParamsRead.stack = &task1Stack;
     taskParamsRead.instance->name = "read";
-    Task_construct(&task1Struct, (Task_FuncPtr)readFxn, &taskParamsRead, NULL);
+    Task_construct(&task1Struct, (Task_FuncPtr)readUART0Fxn, &taskParamsRead, NULL);
 
     Task_Params_init(&taskParamsWrite);
     taskParamsWrite.stackSize = TASKSTACKSIZE;
