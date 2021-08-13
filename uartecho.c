@@ -53,6 +53,8 @@
 
 #include <semaphore.h>
 
+#include <string.h>
+
 #define TASKSTACKSIZE     768
 
 Task_Struct task0Struct, task1Struct, task2Struct;
@@ -66,6 +68,18 @@ char input[MAX_BUFFER];
 sem_t mutex, empty0, empty5, full0, full5, uart0_queue, uart5_queue;
 
 int last_put0 = 0, last_taken0 = 0, last_put5 = 0, last_taken5 = 0;
+
+/*
+ *  Console print function
+ */
+void console_print(char* text)
+{
+    int i = 0;
+    while (i < strlen(text)) {
+            UART_write(uart0, &text[i], 1);
+            i++;
+    }
+}
 
 /*
  *  Read function
