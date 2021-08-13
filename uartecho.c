@@ -82,6 +82,18 @@ void console_print(char* text)
 }
 
 /*
+ *  Device send function
+ */
+void device_send(char* text)
+{
+    int i = 0;
+    while (i < strlen(text)) {
+        UART_write(uart5, &text[i], 1);
+        i++;
+    }
+}
+
+/*
  *  Read function
  */
 Void readUART0Fxn(UArg arg0, UArg arg1)
