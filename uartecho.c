@@ -58,7 +58,7 @@
 Task_Struct task0Struct, task1Struct, task2Struct;
 Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[TASKSTACKSIZE];
 
-UART_Handle uart0;
+UART_Handle uart0, uart5;
 
 #define MAX_BUFFER 256
 char input[MAX_BUFFER];
@@ -131,18 +131,31 @@ int main(void)
     GPIO_write(Board_LED0, Board_LED_ON);
 
     /* UART intialization */
-    UART_Params uartParams;
+    UART_Params uart0Params;
+    UART_Params uart5Params;
 
     /* Create a UART with data processing off. */
-    UART_Params_init(&uartParams);
-    uartParams.writeDataMode = UART_DATA_BINARY;
-    uartParams.readDataMode = UART_DATA_BINARY;
-    uartParams.readReturnMode = UART_RETURN_FULL;
-    uartParams.readEcho = UART_ECHO_OFF;
-    uartParams.baudRate = 9600;
-    uart0 = UART_open(Board_UART0, &uartParams);
+    UART_Params_init(&uart0Params);
+    uart0Params.writeDataMode = UART_DATA_BINARY;
+    uart0Params.readDataMode = UART_DATA_BINARY;
+    uart0Params.readReturnMode = UART_RETURN_FULL;
+    uart0Params.readEcho = UART_ECHO_OFF;
+    uart0Params.baudRate = 9600;
+    uart0 = UART_open(Board_UART0, &uart0Params);
 
     if (uart0 == NULL) {
+        System_abort("Error opening the UART");
+    }
+
+    UART_Params_init(&uart5Params);
+    uart5Params.writeDataMode = UART_DATA_BINARY;
+    uart5Params.readDataMode = UART_DATA_BINARY;
+    uart5Params.readReturnMode = UART_RETURN_FULL;
+    uart5Params.readEcho = UART_ECHO_OFF;
+    uart5Params.baudRate = 9600;
+    uart5 = UART_open(Board_UART5, &uart5Params);
+
+    if (uart5 == NULL) {
         System_abort("Error opening the UART");
     }
 
