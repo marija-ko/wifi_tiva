@@ -135,6 +135,22 @@ Void writeUART0Fxn(UArg arg0, UArg arg1)
     }
 }
 
+/*
+ *  Read UART5 function
+ */
+Void readUART5Fxn(UArg arg0, UArg arg1)
+{
+    while (1) {
+        sem_wait(&empty5);
+
+        UART_read(uart5, &input[last_put5], 1);
+
+        last_put5 = (last_put5 + 1) % MAX_BUFFER;
+
+        sem_post(&full5);
+    }
+}
+
 
 /*
  *  ======== main ========
