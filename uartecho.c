@@ -174,7 +174,7 @@ void process_response(char inputc)
         num_ssid = 0;
     } else if (listing_networks == 1) {
         if(inputc =='\x0d') {
-            if (strstr(ssid_entry[num_ssid],"OK")) {
+            if (strstr(ssid_entry[num_ssid],"OK") || strstr(ssid_entry[num_ssid],"ERROR")) {
                 listing_networks = 0;
                 without_echo = 0;
                 command_size = 0;
