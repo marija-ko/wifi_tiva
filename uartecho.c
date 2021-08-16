@@ -156,7 +156,7 @@ int passthrough_mode = 0;
 
 char ssid_entry[32][128];
 int listing_networks = 0;
-int number = 0;
+int num_ssid = 0;
 int command_size = 0;
 int ssid_size = 0;
 
@@ -171,10 +171,10 @@ void process_response(char inputc)
     if (strstr(command,"AT+CWLAP\x0d") && listing_networks == 0) {
         listing_networks = 1;
         without_echo = 1;
-        number = 0;
+        num_ssid = 0;
     } else if (listing_networks == 1) {
         if(inputc =='\x0d') {
-            if (strstr(ssid_entry[number],"OK")) {
+            if (strstr(ssid_entry[num_ssid],"OK")) {
                 listing_networks = 0;
                 without_echo = 0;
                 command_size = 0;
@@ -182,11 +182,11 @@ void process_response(char inputc)
                 sem_post(&command_finished);
             } else {
                 ssid_size = 0;
-                number++;
+                num_ssid++;
             }
         } else if(inputc =='\x0a') {
         } else {
-            ssid_entry[number][ssid_size++] = inputc;
+            ssid_entry[num_ssid][ssid_size++] = inputc;
         }
     }
 
@@ -216,7 +216,7 @@ void list_networks() {
     char* token;
     char* ssid;
 
-    for(i = 0; i < number-1; i++) {
+    for(i = 0; i < num_ssid-1; i++) {
 
         char delimiter_comma[2] = ",";
         char delimiter_quote[2] = "\"";
