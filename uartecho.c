@@ -186,7 +186,7 @@ int main(void)
     Task_Params_init(&taskParamsRead0);
     taskParamsRead0.stackSize = TASKSTACKSIZE;
     taskParamsRead0.stack = &task1Stack;
-    taskParamsRead0.instance->name = "read";
+    taskParamsRead0.instance->name = "read0";
     Task_construct(&task1Struct, (Task_FuncPtr)readUART0Fxn, &taskParamsRead0, NULL);
 
     Task_Params_init(&taskParamsWrite);
