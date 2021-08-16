@@ -347,12 +347,17 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
             switch (input[(last_put0 + MAX_BUFFER - 2) % MAX_BUFFER]) {
                 case '1':
                     device_send("AT+CWMODE=3\r\n");
+                    sem_wait(&command_finished);
                     break;
                 case '2':
                     device_send("AT+CWLAP\r\n");
                     sem_wait(&command_finished);
                     list_networks();
                     choose_network();
+                    break;
+                case '3':
+                    choose_port();
+                    sem_wait(&command_finished);
                     break;
                 default:
                     console_print("Invalid option \n\r");
