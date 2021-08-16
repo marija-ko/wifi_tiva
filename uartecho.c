@@ -230,6 +230,8 @@ void list_networks() {
         console_print(listed_number);
         console_print(ssid);
         console_print("\r\n");
+
+        put(ssid, i);
     }
 }
 
