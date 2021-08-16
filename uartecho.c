@@ -224,7 +224,7 @@ void list_networks() {
         token = strtok(ssid_entry[i], delimiter_comma);
         token = strtok(NULL, delimiter_comma);
         ssid = strtok(token, delimiter_quote);
-        itoa(i, listed_number);
+        itoa(i+1, listed_number);
         strcat(listed_number, ". ");
 
         console_print(listed_number);
