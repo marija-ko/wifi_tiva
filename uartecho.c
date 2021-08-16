@@ -139,6 +139,13 @@ void put(char* name, int index)
     }
 }
 
+/*
+ *   Get a particular SSID from the list with SSID's
+ */
+char* get(int index)
+{
+    return ssid_list[index];
+}
 
 /*
  *  Processing response from UART5
