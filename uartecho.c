@@ -96,6 +96,7 @@ void device_send(char* text)
 /*
  *  Read function
  */
+int first = 1;
 Void readUART0Fxn(UArg arg0, UArg arg1)
 {
     char* delete = "\033[2J\033[1;1H";
@@ -116,6 +117,21 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
         last_put0 = (last_put0 + 1) % MAX_BUFFER;
 
         sem_post(&full0);
+        if(input[(last_put0 + MAX_BUFFER - 1) % MAX_BUFFER] == '\x0d' && !first) {
+            switch (input[(last_put0 + MAX_BUFFER - 2) % MAX_BUFFER]) {
+                case '1':
+                    device_send("AT+CWMODE=3\r\n");
+                    break;
+                case '2':
+                    device_send("AT+CWLAP\r\n");
+                    break;
+                default:
+                    console_print("Invalid option \n\r");
+                    console_print(command_list);
+                    break;
+            }
+        }
+        first = 0;
     }
 }
 
