@@ -65,7 +65,7 @@ UART_Handle uart0, uart5;
 #define MAX_BUFFER 256
 char input[MAX_BUFFER];
 
-sem_t mutex, empty0, empty5, full0, full5, uart0_queue, uart5_queue;
+sem_t mutex, empty0, empty5, full0, command_finished;
 
 int last_put0 = 0, last_taken0 = 0, last_put5 = 0, last_taken5 = 0;
 
@@ -140,8 +140,6 @@ int number = 0;
 int command_size = 0;
 int ssid_size = 0;
 
-int command_finished = 0;
-
 void process_response(char inputc)
 {
 
@@ -161,8 +159,7 @@ void process_response(char inputc)
                 without_echo = 0;
                 command_size = 0;
                 memset(command, 0, strlen(command));
-                command_finished = 1;
-                sem_post(&full5);
+                sem_post(&command_finished);
             } else {
                 ssid_size = 0;
                 number++;
@@ -179,8 +176,7 @@ void process_response(char inputc)
 
     if(inputc =='\x0d') {
         if (strstr(command, "OK") || strstr(command, "ERROR") && passthrough_mode == 0) {
-           command_finished = 1;
-           sem_post(&full5);
+           sem_post(&command_finished);
         }
         without_echo = 0;
         command_size = 0;
