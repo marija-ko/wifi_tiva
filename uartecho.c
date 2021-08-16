@@ -318,6 +318,45 @@ void choose_port()
     device_send(text);
 }
 
+void enter_passthrough()
+{
+    passthrough_mode = 1;
+    console_print("Write your messages. +++ to exit \n\r");
+
+    while(passthrough_mode == 1) {
+        char message [128] = "";
+        int i = 0;
+        char k;
+
+        while(1) {
+             UART_read(uart0, &k, 1);
+             UART_write(uart0, &k, 1);
+             if(k == '\n' || k == '\r') break;
+             message[i++] = k;
+        }
+        message[i++] = '\0';
+
+        if (strcmp(message, "+++") == 0) {
+            passthrough_mode = 0;
+            break;
+        }
+
+        char text[128];
+        char msg_len[4];
+        itoa(strlen(message), msg_len);
+
+        snprintf(text, 128, "AT+CIPSEND=%s\r\n", msg_len);
+
+        device_send(text);
+
+        SysCtlDelay(1000 * (SysCtlClockGet() / 3 / 1000));
+
+        sem_wait(&command_finished);
+
+        device_send(message);
+    }
+}
+
 /*
  *  Read function
  */
