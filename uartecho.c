@@ -154,16 +154,13 @@ Void writeUART0Fxn(UArg arg0, UArg arg1)
 /*
  *  Read UART5 function
  */
+char input_char;
 Void readUART5Fxn(UArg arg0, UArg arg1)
 {
     while (1) {
-        sem_wait(&empty5);
+        UART_read(uart5, &input_char, 1);
 
-        UART_read(uart5, &input[last_put5], 1);
-
-        last_put5 = (last_put5 + 1) % MAX_BUFFER;
-
-        sem_post(&full5);
+        UART_write(uart0, &input_char, 1);
     }
 }
 
@@ -197,6 +194,12 @@ int main(void)
     taskParamsWrite.stack = &task2Stack;
     taskParamsWrite.instance->name = "write";
     Task_construct(&task2Struct, (Task_FuncPtr)writeUART0Fxn, &taskParamsWrite, NULL);
+
+    Task_Params_init(&taskParamsRead5);
+    taskParamsRead5.stackSize = TASKSTACKSIZE;
+    taskParamsRead5.stack = &task0Stack;
+    taskParamsRead5.instance->name = "read5";
+    Task_construct(&task0Struct, (Task_FuncPtr)readUART5Fxn, &taskParamsRead5, NULL);
 
     /* Turn on user LED */
     GPIO_write(Board_LED0, Board_LED_ON);
