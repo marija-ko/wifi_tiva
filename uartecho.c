@@ -176,18 +176,18 @@ int main(void)
     Board_initUART();
 
     /* Construct BIOS objects */
-    Task_Params taskParamsRead, taskParamsWrite;
+    Task_Params taskParamsRead0, taskParamsWrite, taskParamsRead5;
 
     sem_init(&empty0,0,MAX_BUFFER);
     sem_init(&full0,0,0);
     sem_init(&empty5,0,MAX_BUFFER);
     sem_init(&full5,0,0);
 
-    Task_Params_init(&taskParamsRead);
-    taskParamsRead.stackSize = TASKSTACKSIZE;
-    taskParamsRead.stack = &task1Stack;
-    taskParamsRead.instance->name = "read";
-    Task_construct(&task1Struct, (Task_FuncPtr)readUART0Fxn, &taskParamsRead, NULL);
+    Task_Params_init(&taskParamsRead0);
+    taskParamsRead0.stackSize = TASKSTACKSIZE;
+    taskParamsRead0.stack = &task1Stack;
+    taskParamsRead0.instance->name = "read";
+    Task_construct(&task1Struct, (Task_FuncPtr)readUART0Fxn, &taskParamsRead0, NULL);
 
     Task_Params_init(&taskParamsWrite);
     taskParamsWrite.stackSize = TASKSTACKSIZE;
