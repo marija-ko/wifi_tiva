@@ -49,10 +49,10 @@
 /* Example/Board Header files */
 #include "Board.h"
 
+#include <stdio.h>
 #include <stdint.h>
-
+#include <stdlib.h>
 #include <semaphore.h>
-
 #include <string.h>
 
 #define TASKSTACKSIZE     768
@@ -68,6 +68,21 @@ char input[MAX_BUFFER];
 sem_t mutex, empty0, empty5, full0, full5, uart0_queue, uart5_queue;
 
 int last_put0 = 0, last_taken0 = 0, last_put5 = 0, last_taken5 = 0;
+
+/*
+ *  reverse:  reverse string s in place
+ */
+void reverse(char s[])
+{
+    int i, j;
+    char c;
+
+    for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
+        c = s[i];
+        s[i] = s[j];
+        s[j] = c;
+    }
+}
 
 /*
  *  Console print function
