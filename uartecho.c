@@ -216,7 +216,7 @@ int main(void)
     uart0Params.readDataMode = UART_DATA_BINARY;
     uart0Params.readReturnMode = UART_RETURN_FULL;
     uart0Params.readEcho = UART_ECHO_OFF;
-    uart0Params.baudRate = 9600;
+    uart0Params.baudRate = 115200;
     uart0 = UART_open(Board_UART0, &uart0Params);
 
     if (uart0 == NULL) {
@@ -228,7 +228,7 @@ int main(void)
     uart5Params.readDataMode = UART_DATA_BINARY;
     uart5Params.readReturnMode = UART_RETURN_FULL;
     uart5Params.readEcho = UART_ECHO_OFF;
-    uart5Params.baudRate = 9600;
+    uart5Params.baudRate = 115200;
     uart5 = UART_open(Board_UART5, &uart5Params);
 
     if (uart5 == NULL) {
