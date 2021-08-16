@@ -304,7 +304,11 @@ int main(void)
     sem_init(&empty0,0,MAX_BUFFER);
     sem_init(&full0,0,0);
     sem_init(&empty5,0,MAX_BUFFER);
-    sem_init(&full5,0,0);
+    sem_init(&command_finished,0,0);
+    int i;
+    for (i = 0; i < 32; i++) {
+        memset(ssid_entry[i], 0, strlen(ssid_entry[i]));
+    }
 
     Task_Params_init(&taskParamsRead0);
     taskParamsRead0.stackSize = TASKSTACKSIZE;
