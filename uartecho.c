@@ -235,6 +235,49 @@ void list_networks() {
     }
 }
 
+void choose_network()
+{
+    console_print("Type 0 to return \n\r");
+    char choice_char[4] = "";
+    char k;
+    int i = 0;
+
+    while (1) {
+        UART_read(uart0, &k, 1);
+        UART_write(uart0, &k, 1);
+        if(k == '\n' || k == '\r') break;
+        choice_char[i++] = k;
+    }
+
+    int choice = atoi(choice_char) - 1;
+    if (choice < 0 || choice >= num_ssid)
+        return;
+
+    console_print(ssid_list[choice]);
+    console_print("\r\n");
+    console_print("Enter password\r\n");
+
+    char password[64];
+    i = 0;
+
+
+    while(1) {
+        UART_read(uart0, &k, 1);
+        if(k == '\n' || k == '\r') break;
+        password[i++] = k;
+        char star = '*';
+        UART_write(uart0, &star, 1);
+    }
+    password[i++] = '\0';
+
+    console_print("\r\n");
+
+    char text[128];
+    snprintf(text, 128, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid_list[choice], password);
+
+    device_send(text);
+}
+
 /*
  *  Read function
  */
@@ -269,6 +312,7 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
                     device_send("AT+CWLAP\r\n");
                     sem_wait(&command_finished);
                     list_networks();
+                    choose_network();
                     break;
                 default:
                     console_print("Invalid option \n\r");
