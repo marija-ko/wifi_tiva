@@ -398,6 +398,12 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
                     choose_port();
                     sem_wait(&command_finished);
                     break;
+                case '4':
+                    enter_passthrough();
+                    while(passthrough_mode == 1) {
+
+                    }
+                    break;
                 default:
                     console_print("Invalid option \n\r");
                     console_print(command_list);
