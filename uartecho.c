@@ -278,6 +278,46 @@ void choose_network()
     device_send(text);
 }
 
+void choose_port()
+{
+    char port_number_char[5] = "";
+    int i = 0;
+    char k;
+
+    console_print("First run server.py file. \n\r Type the number of port you'd like to use. \n\r");
+
+    while(1) {
+        UART_read(uart0, &k, 1);
+        UART_write(uart0, &k, 1);
+        if(k == '\n' || k == '\r') break;
+        port_number_char[i++] = k;
+    }
+
+    console_print("\r\n");
+
+    int port_number = atoi(port_number_char);
+
+    console_print("Enter IP address you'd like to message. \n\r");
+
+    char ip_address[16] = "";
+    i = 0;
+
+    while(1) {
+        UART_read(uart0, &k, 1);
+        UART_write(uart0, &k, 1);
+        if(k == '\n' || k == '\r') break;
+        ip_address[i++] = k;
+    }
+    ip_address[i++] = '\0';
+
+    console_print("\r\n");
+
+    char text[128];
+
+    sprintf(text, "AT+CIPSTART=\"TCP\",\"%s\",%s\r\n", ip_address, port_number_char);
+    device_send(text);
+}
+
 /*
  *  Read function
  */
