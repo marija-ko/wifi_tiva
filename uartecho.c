@@ -128,6 +128,67 @@ void device_send(char* text)
 }
 
 /*
+ *  Processing response from UART5
+ */
+char command[MAX_BUFFER] = "";
+int without_echo = 0;
+int passthrough_mode = 0;
+
+char ssid_entry[32][128];
+int listing_networks = 0;
+int number = 0;
+int command_size = 0;
+int ssid_size = 0;
+
+int command_finished = 0;
+
+void process_response(char inputc)
+{
+
+    if(listing_networks == 0 && without_echo == 0) {
+        command[command_size++] = inputc;
+        UART_write(uart0, &inputc, 1);
+    }
+
+    if (strstr(command,"AT+CWLAP\x0d") && listing_networks == 0) {
+        listing_networks = 1;
+        without_echo = 1;
+        number = 0;
+    } else if (listing_networks == 1) {
+        if(inputc =='\x0d') {
+            if (strstr(ssid_entry[number],"OK")) {
+                listing_networks = 0;
+                without_echo = 0;
+                command_size = 0;
+                memset(command, 0, strlen(command));
+                command_finished = 1;
+                sem_post(&full5);
+            } else {
+                ssid_size = 0;
+                number++;
+            }
+        } else if(inputc =='\x0a') {
+        } else {
+            ssid_entry[number][ssid_size++] = inputc;
+        }
+    }
+
+    if (strstr(command,"AT+CWJAP=")){
+        without_echo = 1;
+    }
+
+    if(inputc =='\x0d') {
+        if (strstr(command, "OK") || strstr(command, "ERROR") && passthrough_mode == 0) {
+           command_finished = 1;
+           sem_post(&full5);
+        }
+        without_echo = 0;
+        command_size = 0;
+        memset(command, 0, strlen(command));
+    }
+}
+
+/*
  *  Read function
  */
 int first = 1;
@@ -194,7 +255,7 @@ Void readUART5Fxn(UArg arg0, UArg arg1)
     while (1) {
         UART_read(uart5, &input_char, 1);
 
-        UART_write(uart0, &input_char, 1);
+        process_response(input_char);
     }
 }
 
