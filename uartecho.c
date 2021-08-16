@@ -185,6 +185,35 @@ void process_response(char inputc)
 }
 
 /*
+ *  Print available networks
+ */
+void list_networks() {
+
+    char listed_number[4];
+
+    int i;
+
+    char* token;
+    char* ssid;
+
+    for(i = 0; i < number-1; i++) {
+
+        char delimiter_comma[2] = ",";
+        char delimiter_quote[2] = "\"";
+
+        token = strtok(ssid_entry[i], delimiter_comma);
+        token = strtok(NULL, delimiter_comma);
+        ssid = strtok(token, delimiter_quote);
+        itoa(i, listed_number);
+        strcat(listed_number, ". ");
+
+        console_print(listed_number);
+        console_print(ssid);
+        console_print("\r\n");
+    }
+}
+
+/*
  *  Read function
  */
 int first = 1;
