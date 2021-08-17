@@ -163,7 +163,6 @@ int ssid_size = 0;
 int send_attempted;
 void process_response(char inputc)
 {
-
     if(listing_networks == 0 && without_echo == 0) {
         command[command_size++] = inputc;
         UART_write(uart0, &inputc, 1);
@@ -174,18 +173,19 @@ void process_response(char inputc)
         without_echo = 1;
         num_ssid = 0;
     } else if (listing_networks == 1) {
-        if(inputc =='\x0d') {
+        if (inputc =='\x0d') {
             if (strstr(ssid_entry[num_ssid],"OK") || strstr(ssid_entry[num_ssid],"ERROR")) {
                 listing_networks = 0;
                 without_echo = 0;
                 command_size = 0;
+
                 memset(command, 0, strlen(command));
                 sem_post(&command_finished);
             } else {
                 ssid_size = 0;
                 num_ssid++;
             }
-        } else if(inputc =='\x0a') {
+        } else if (inputc =='\x0a') {
         } else {
             ssid_entry[num_ssid][ssid_size++] = inputc;
         }
@@ -234,7 +234,7 @@ void list_networks() {
     char* token;
     char* ssid;
 
-    for(i = 0; i < num_ssid-1; i++) {
+    for (i = 0; i < num_ssid-1; i++) {
 
         char delimiter_comma[2] = ",";
         char delimiter_quote[2] = "\"";
@@ -281,7 +281,7 @@ void choose_network()
     i = 0;
 
 
-    while(1) {
+    while (1) {
         UART_read(uart0, &k, 1);
         if(k == '\n' || k == '\r') break;
         password[i++] = k;
@@ -306,7 +306,7 @@ void choose_port()
 
     console_print("First run server.py file. \n\r Type the number of port you'd like to use. \n\r");
 
-    while(1) {
+    while (1) {
         UART_read(uart0, &k, 1);
         UART_write(uart0, &k, 1);
         if(k == '\n' || k == '\r') break;
@@ -322,7 +322,7 @@ void choose_port()
     char ip_address[16] = "";
     i = 0;
 
-    while(1) {
+    while (1) {
         UART_read(uart0, &k, 1);
         UART_write(uart0, &k, 1);
         if(k == '\n' || k == '\r') break;
@@ -348,7 +348,7 @@ void enter_passthrough()
         int i = 0;
         char k;
 
-        while(1) {
+        while (1) {
              if (passthrough_mode == 0) break;
              UART_read(uart0, &k, 1);
              UART_write(uart0, &k, 1);
@@ -364,8 +364,8 @@ void enter_passthrough()
 
         char text[128];
         char msg_len[4];
-        itoa(strlen(message), msg_len);
 
+        itoa(strlen(message), msg_len);
         snprintf(text, 128, "AT+CIPSEND=%s\r\n", msg_len);
 
         device_send(text);
@@ -403,6 +403,7 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
         last_put0 = (last_put0 + 1) % MAX_BUFFER;
 
         sem_post(&full0);
+
         if(input[(last_put0 + MAX_BUFFER - 1) % MAX_BUFFER] == '\x0d' && !first) {
             console_print("\n\r");
             switch (input[(last_put0 + MAX_BUFFER - 2) % MAX_BUFFER]) {
@@ -449,7 +450,6 @@ Void writeUART0Fxn(UArg arg0, UArg arg1)
         sem_wait(&full0);
 
         UART_write(uart0, &input[last_taken0], 1);
-
         last_taken0 = (last_taken0 + 1) % MAX_BUFFER;
 
         sem_post(&empty0);
@@ -464,7 +464,6 @@ Void readUART5Fxn(UArg arg0, UArg arg1)
 {
     while (1) {
         UART_read(uart5, &input_char, 1);
-
         process_response(input_char);
     }
 }
