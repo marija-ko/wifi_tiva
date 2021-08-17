@@ -253,6 +253,9 @@ void list_networks() {
     }
 }
 
+/*
+ *  Connect to network
+ */
 void choose_network()
 {
     console_print("Type 0 to return \n\r");
@@ -298,6 +301,9 @@ void choose_network()
     device_send(text);
 }
 
+/*
+ *  Make TCP connection
+ */
 void choose_port()
 {
     char port_number_char[5] = "";
@@ -338,6 +344,9 @@ void choose_port()
     device_send(text);
 }
 
+/*
+ *  Enter passthrough mode
+ */
 void enter_passthrough()
 {
     passthrough_mode = 1;
