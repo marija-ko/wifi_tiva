@@ -268,8 +268,10 @@ void choose_network()
     }
 
     int choice = atoi(choice_char) - 1;
-    if (choice < 0 || choice >= num_ssid)
+    if (choice < 0 || choice >= num_ssid) {
+        console_print("\r\n");
         return;
+    }
 
     console_print(ssid_list[choice]);
     console_print("\r\n");
@@ -339,7 +341,7 @@ void choose_port()
 void enter_passthrough()
 {
     passthrough_mode = 1;
-    console_print("Write your messages. +++ to exit \n\r");
+    console_print("Entered passthrough mode. \r\nWrite your messages. +++ to exit \n\r");
 
     while(passthrough_mode == 1) {
         char message [128] = "";
@@ -373,6 +375,7 @@ void enter_passthrough()
 
         device_send(message);
     }
+    console_print("Exited passthrough mode. \r \n");
 }
 
 /*
