@@ -349,6 +349,7 @@ void enter_passthrough()
         char k;
 
         while(1) {
+             if (passthrough_mode == 0) break;
              UART_read(uart0, &k, 1);
              UART_write(uart0, &k, 1);
              if(k == '\n' || k == '\r') break;
