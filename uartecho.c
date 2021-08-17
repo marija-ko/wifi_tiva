@@ -432,9 +432,9 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
                     break;
                 default:
                     console_print("Invalid option \n\r");
-                    console_print(command_list);
                     break;
             }
+            console_print(command_list);
         }
         first = 0;
     }
