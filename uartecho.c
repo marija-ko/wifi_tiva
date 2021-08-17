@@ -427,6 +427,9 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
 
                     }
                     break;
+                case '5':
+                    device_send("AT+RESTORE\r\n");
+                    break;
                 default:
                     console_print("Invalid option \n\r");
                     console_print(command_list);
