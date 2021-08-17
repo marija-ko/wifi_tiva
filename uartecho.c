@@ -537,18 +537,6 @@ int main(void)
         System_abort("Error opening the UART");
     }
 
-
-    /* This example has logging and many other debug capabilities enabled */
-    System_printf("This example does not attempt to minimize code or data "
-                  "footprint\n");
-    System_flush();
-
-    System_printf("Starting the UART Echo example\nSystem provider is set to "
-                  "SysMin. Halt the target to view any SysMin contents in "
-                  "ROV.\n");
-    /* SysMin will only print to the console when you call flush or exit */
-    System_flush();
-
     /* Start BIOS */
     BIOS_start();
 
