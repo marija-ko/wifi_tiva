@@ -411,6 +411,7 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
                     sem_wait(&command_finished);
                     list_networks();
                     choose_network();
+                    sem_wait(&command_finished);
                     break;
                 case '3':
                     choose_port();
