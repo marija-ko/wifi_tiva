@@ -160,6 +160,7 @@ int num_ssid = 0;
 int command_size = 0;
 int ssid_size = 0;
 
+int send_attempted;
 void process_response(char inputc)
 {
 
@@ -194,10 +195,27 @@ void process_response(char inputc)
         without_echo = 1;
     }
 
+    if (strstr(command,"AT+CIPSEND=")){
+        send_attempted = 1;
+    }
+
+    if(strstr(command, "CLOSED")) {
+        passthrough_mode = 0;
+    }
+
     if(inputc =='\x0d') {
         if (strstr(command, "OK") || strstr(command, "ERROR") && passthrough_mode == 0) {
            sem_post(&command_finished);
         }
+
+        if (strstr(command, "ERROR") && send_attempted) {
+            passthrough_mode = 0;
+            send_attempted = 0;
+            sem_post(&command_finished);
+        } else if (strstr(command, "OK") && send_attempted) {
+            send_attempted = 0;
+        }
+
         without_echo = 0;
         command_size = 0;
         memset(command, 0, strlen(command));
