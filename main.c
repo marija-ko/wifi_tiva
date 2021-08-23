@@ -488,6 +488,12 @@ int main(void)
     Board_initGPIO();
     Board_initUART();
 
+    /* install Button callback */
+    GPIO_setCallback(Board_BUTTON0, gpioButtonFxn0);
+
+    /* Enable interrupts */
+    GPIO_enableInt(Board_BUTTON0);
+
     /* Construct BIOS objects */
     Task_Params taskParamsRead0, taskParamsWrite, taskParamsRead5;
 
