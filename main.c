@@ -52,6 +52,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "drivers/buttons.h"
 
 //*****************************************************************************
 //
@@ -193,6 +194,29 @@ UART5IntHandler(void)
             command_size = 0;
             memset(command, 0, strlen(command));
         }
+    }
+}
+
+//*****************************************************************************
+//
+// The Button0 interrupt handler.
+//
+//*****************************************************************************
+void
+Button0IntHandler(void)
+{
+    uint32_t status = 0;
+
+    status = GPIOIntStatus(BUTTONS_GPIO_BASE, true);
+    GPIOIntClear(BUTTONS_GPIO_BASE, status);
+
+    if (status & GPIO_INT_PIN_4){
+        uint8_t  value = GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_3);
+
+        if (value == 0)
+          GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+        else
+          GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
     }
 }
 
