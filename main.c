@@ -350,7 +350,7 @@ void choose_port()
 void enter_passthrough()
 {
     passthrough_mode = 1;
-    console_print("Entered passthrough mode. \r\nWrite your messages. +++ to exit \n\r");
+    console_print("Entered passthrough mode. \r\nWrite your messages. \r\n ++pin to send LED0 pin value. \n\r +++ to exit. \n\r");
 
     while(passthrough_mode == 1) {
         char message [128] = "";
@@ -365,11 +365,24 @@ void enter_passthrough()
              message[i++] = k;
         }
         message[i++] = '\0';
+        console_print("\r\n");
 
         if (strcmp(message, "+++") == 0) {
             passthrough_mode = 0;
             break;
         }
+
+
+        if (strcmp(message, "++pin") == 0) {
+            char val[3];
+            int i = GPIO_read(Board_LED0);
+
+            memset(message, 0, strlen(message));
+            itoa(i, message);
+//            GPIO_read(Board_LED0);
+        }
+
+
 
         char text[128];
         char msg_len[4];
