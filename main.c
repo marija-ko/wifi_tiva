@@ -263,6 +263,7 @@ main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_UART5);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     //
     // Enable processor interrupts.
@@ -284,6 +285,21 @@ main(void)
 
     IntEnable(INT_UART5);
     UARTIntEnable(UART5_BASE, UART_INT_RX | UART_INT_RT);
+
+    //
+    // Enable the GPIO pin for the LED (PF3).  Set the direction as output, and
+    // enable the GPIO pin for digital function.
+    //
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+
+    //
+    // Enable the GPIO pin for the SW1 (PF0).  Set the direction as input
+    //
+    GPIOPinTypeGPIOInput(BUTTONS_GPIO_BASE, LEFT_BUTTON);
+    GPIOPadConfigSet(BUTTONS_GPIO_BASE, LEFT_BUTTON, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+    GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_FALLING_EDGE);
+    IntEnable(INT_GPIOF);
+    GPIOIntEnable(GPIO_PORTF_BASE, LEFT_BUTTON);
 
     //
     // Configure the UART for 115,200, 8-N-1 operation.
