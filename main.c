@@ -204,11 +204,11 @@ void process_response(char inputc)
     }
 
     if(inputc =='\x0d') {
-        if (strstr(command, "OK") || strstr(command, "ERROR") && passthrough_mode == 0) {
+        if (strstr(command, "OK") || strstr(command, "ERROR") || strstr(command, "FAIL") && passthrough_mode == 0) {
            sem_post(&command_finished);
         }
 
-        if (strstr(command, "ERROR") && send_attempted) {
+        if ((strstr(command, "ERROR") || strstr(command, "FAIL")) && send_attempted) {
             passthrough_mode = 0;
             send_attempted = 0;
             sem_post(&command_finished);
