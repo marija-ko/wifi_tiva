@@ -128,7 +128,7 @@ int passthrough_mode = 0;
 
 char ssid_entry[32][128];
 int listing_networks = 0;
-int number = 0;
+int num_ssid = 0;
 int command_size = 0;
 int ssid_size = 0;
 int command_finished = 0;
@@ -159,12 +159,12 @@ UART5IntHandler(void)
         if (strstr(command,"AT+CWLAP\x0d") && listing_networks == 0) {
             listing_networks = 1;
             without_echo = 1;
-            number = 0;
+            num_ssid = 0;
             UARTCharPutNonBlocking(UART0_BASE, '\r');
             UARTCharPutNonBlocking(UART0_BASE, '\n');
         } else if (listing_networks == 1) {
             if(k =='\x0d') {
-                if (strstr(ssid_entry[number],"OK")) {
+                if (strstr(ssid_entry[num_ssid],"OK")) {
                     listing_networks = 0;
                     without_echo = 0;
                     command_size = 0;
@@ -172,12 +172,12 @@ UART5IntHandler(void)
                     command_finished = 1;
                 } else {
                     ssid_size = 0;
-                    number++;
+                    num_ssid++;
                 }
             } else if(k =='\x0a') {
                 continue;
             } else {
-                ssid_entry[number][ssid_size++] = k;
+                ssid_entry[num_ssid][ssid_size++] = k;
             }
         }
 
@@ -310,7 +310,7 @@ main(void)
             char delimiter_quote[2] = "\"";
             int i;
 
-            for(i = 0; i < number-1; i++) {
+            for(i = 0; i < num_ssid-1; i++) {
                 snprintf(listed_number, 4, "%d. ", i+1);
                 char* token;
                 char* ssid;
@@ -340,7 +340,7 @@ main(void)
             UARTSend(UART0_BASE, "\r\n", strlen("\r\n"));
 
             int choice2 = atoi(choice2_char) - 1;
-            if (choice2 < 0 || choice2 >= number)
+            if (choice2 < 0 || choice2 >= num_ssid)
                 continue;
 
             UARTSend(UART0_BASE, (uint8_t *) ssid_list[choice2], strlen(ssid_list[choice2]));
