@@ -477,6 +477,20 @@ Void readUART5Fxn(UArg arg0, UArg arg1)
     }
 }
 
+/*
+ *  Callback function for the GPIO interrupt on Board_BUTTON0.
+ */
+int count = 0;
+void gpioButtonFxn0(unsigned int index)
+{
+    /* Clear the GPIO interrupt and toggle an LED */
+    GPIO_toggle(Board_LED0);
+
+    if (count++ == 100) {
+        count = 0;
+    }
+}
+
 
 /*
  *  ======== main ========
