@@ -463,7 +463,8 @@ main(void)
             break;
         case '4':
             passthrough_mode = 1;
-            UARTSend(UART0_BASE, (uint8_t *)"Write your messages. +++ to exit \n\r", strlen("Write your messages. +++ to exit \n\r"));
+            UARTSend(UART0_BASE, (uint8_t *)"Entered passthrough mode. \r\nWrite your messages. \r\n ++pin to send LED0 pin value. \n\r +++ to exit. \n\r",
+                                     strlen("Entered passthrough mode. \r\nWrite your messages. \r\n ++pin to send LED0 pin value. \n\r +++ to exit. \n\r"));
 
             while(passthrough_mode == 1) {
                 char message [128] = "";
@@ -482,6 +483,13 @@ main(void)
                 if (strcmp(message, "+++") == 0) {
                     passthrough_mode = 0;
                     break;
+                }
+
+                if (strcmp(message, "++pin") == 0) {
+                    int val = GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_3);
+                    if (val) val = 1;
+                    memset(message, 0, val);
+                    snprintf(message, 128, "%d", val);
                 }
 
                 char text1[128];
