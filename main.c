@@ -313,6 +313,11 @@ main(void)
                              UART_CONFIG_PAR_NONE));
     GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
+    //
+    // Turn on LED
+    //
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+
     UARTSend(UART0_BASE, (uint8_t *)"\033[2J\033[1;1H", 10);
 
     //
