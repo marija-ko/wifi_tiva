@@ -130,13 +130,14 @@ void device_send(char* text)
 /*
  * Insert into list with SSID's
  */
-char ssid_list[32][32];
+char ssid_list[32][33];
 void put(char* name, int index)
 {
     int i;
-    for(i = 0; i < 32; i++) {
+    for(i = 0; i < strlen(name) && i < 32; i++) {
         ssid_list[index][i] = name[i];
     }
+    ssid_list[index][i] = '\0';
 }
 
 /*
