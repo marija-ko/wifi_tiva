@@ -215,6 +215,7 @@ void process_response(char inputc)
             sem_post(&command_finished);
         } else if (strstr(command, "OK") && send_attempted) {
             send_attempted = 0;
+            sem_post(&command_finished);
         }
 
         without_echo = 0;
@@ -274,6 +275,7 @@ void choose_network()
     int choice = atoi(choice_char) - 1;
     if (choice < 0 || choice >= num_ssid) {
         console_print("\r\n");
+        sem_post(&command_finished);
         return;
     }
 
