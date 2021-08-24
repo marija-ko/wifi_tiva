@@ -350,6 +350,7 @@ void choose_port()
 /*
  *  Enter passthrough mode
  */
+int val;
 void enter_passthrough()
 {
     passthrough_mode = 1;
@@ -377,15 +378,11 @@ void enter_passthrough()
 
 
         if (strcmp(message, "++pin") == 0) {
-            char val[3];
-            int i = GPIO_read(Board_LED0);
+            val = GPIO_read(Board_LED0);
 
             memset(message, 0, strlen(message));
-            itoa(i, message);
-//            GPIO_read(Board_LED0);
+            itoa(val, message);
         }
-
-
 
         char text[128];
         char msg_len[4];
