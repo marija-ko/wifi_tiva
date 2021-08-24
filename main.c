@@ -65,7 +65,7 @@ UART_Handle uart0, uart5;
 #define MAX_BUFFER 256
 char input[MAX_BUFFER];
 
-sem_t mutex, empty0, empty5, full0, command_finished;
+sem_t mutex, empty0, full0, command_finished;
 
 int last_put0 = 0, last_taken0 = 0, last_put5 = 0, last_taken5 = 0;
 
@@ -526,7 +526,6 @@ int main(void)
 
     sem_init(&empty0,0,MAX_BUFFER);
     sem_init(&full0,0,0);
-    sem_init(&empty5,0,MAX_BUFFER);
     sem_init(&command_finished,0,0);
     int i;
     for (i = 0; i < 32; i++) {
