@@ -422,15 +422,16 @@ Void readUART0Fxn(UArg arg0, UArg arg1)
 
         UART_read(uart0, &input[last_put0], 1);
 
-        int lp = last_put0;
-
         last_put0 = (last_put0 + 1) % MAX_BUFFER;
+
+        char last = input[(last_put0 - 1 + MAX_BUFFER) % MAX_BUFFER];
+        char second_last = input[(last_put0 - 2 + MAX_BUFFER) % MAX_BUFFER];
 
         sem_post(&full0);
 
-        if(input[(lp + MAX_BUFFER) % MAX_BUFFER] == '\x0d' && !first) {
+        if(last == '\x0d' && !first) {
             console_print("\n\r");
-            switch (input[(lp + MAX_BUFFER - 1) % MAX_BUFFER]) {
+            switch (second_last) {
                 case '1':
                     device_send("AT+CWMODE=3\r\n");
                     sem_wait(&command_finished);
