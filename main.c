@@ -267,8 +267,8 @@ void choose_network()
 
     while (1) {
         UART_read(uart0, &k, 1);
+        if(k == '\n' || k == '\r' || i>=3) break;
         UART_write(uart0, &k, 1);
-        if(k == '\n' || k == '\r') break;
         choice_char[i++] = k;
     }
 
@@ -289,7 +289,7 @@ void choose_network()
 
     while (1) {
         UART_read(uart0, &k, 1);
-        if(k == '\n' || k == '\r') break;
+        if(k == '\n' || k == '\r' || i >= 64) break;
         password[i++] = k;
         char star = '*';
         UART_write(uart0, &star, 1);
@@ -317,8 +317,8 @@ void choose_port()
 
     while (1) {
         UART_read(uart0, &k, 1);
+        if(k == '\n' || k == '\r' || i >= 5) break;
         UART_write(uart0, &k, 1);
-        if(k == '\n' || k == '\r') break;
         port_number_char[i++] = k;
     }
 
@@ -334,7 +334,7 @@ void choose_port()
     while (1) {
         UART_read(uart0, &k, 1);
         UART_write(uart0, &k, 1);
-        if(k == '\n' || k == '\r') break;
+        if(k == '\n' || k == '\r' || i >= 16) break;
         ip_address[i++] = k;
     }
     ip_address[i++] = '\0';
@@ -363,8 +363,8 @@ void enter_passthrough()
         while (1) {
              if (passthrough_mode == 0) break;
              UART_read(uart0, &k, 1);
+             if(k == '\n' || k == '\r' || i >= 128) break;
              UART_write(uart0, &k, 1);
-             if(k == '\n' || k == '\r') break;
              message[i++] = k;
         }
         message[i++] = '\0';
